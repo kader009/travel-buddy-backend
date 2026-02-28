@@ -1,18 +1,9 @@
 import { Context } from '../../types/context';
+import { ProfileInput } from '../../types/profile';
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   return String(error);
-}
-
-interface ProfileInput {
-  input: {
-    bio?: string;
-    profileImage?: string;
-    travelInterests?: string[];
-    visitedCountries?: string[];
-    currentLocation?: string;
-  };
 }
 
 export const profileResolver = {

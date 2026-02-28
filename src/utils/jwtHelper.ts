@@ -1,14 +1,14 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { TokenPayload } from '../types/userToken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
 export const generateToken = (
   userId: string,
-  expiresIn: string = '1d',
+  expiresIn: SignOptions['expiresIn'] = '1d',
 ): string => {
   const payload: TokenPayload = { userId };
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: expiresIn as any });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 };
 
 export const verifyToken = (token?: string): TokenPayload | null => {

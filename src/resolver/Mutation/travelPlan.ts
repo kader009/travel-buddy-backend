@@ -1,21 +1,12 @@
 import { Context } from '../../types/context';
+import {
+  CreateTravelPlanInput,
+  UpdateTravelPlanInput,
+} from '../../types/travelPlan';
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   return String(error);
-}
-
-interface CreateTravelPlanInput {
-  destination: string;
-  startDate: string;
-  endDate: string;
-  budgetRange: string;
-  travelType: string;
-  description: string;
-}
-
-interface UpdateTravelPlanInput extends Partial<CreateTravelPlanInput> {
-  id: string;
 }
 
 export const travelPlanResolver = {
