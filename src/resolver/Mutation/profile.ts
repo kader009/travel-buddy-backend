@@ -1,5 +1,10 @@
 import { Context } from '../../types/context';
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 interface ProfileInput {
   input: {
     bio?: string;
@@ -43,8 +48,8 @@ export const profileResolver = {
       }
 
       return { userError: null, profile };
-    } catch (error: any) {
-      return { userError: error.message, profile: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), profile: null };
     }
   },
 };

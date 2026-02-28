@@ -1,4 +1,10 @@
 import { Context } from '../../types/context';
+import { Prisma } from '@prisma/client';
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
 
 export const reviewResolver = {
   createReview: async (
@@ -25,8 +31,8 @@ export const reviewResolver = {
       });
 
       return { userError: null, review };
-    } catch (error: any) {
-      return { userError: error.message, review: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), review: null };
     }
   },
 
@@ -48,7 +54,7 @@ export const reviewResolver = {
       if (currentReview.reviewerId !== userId)
         return { userError: 'Forbidden', review: null };
 
-      const updateData: any = {};
+      const updateData: Prisma.ReviewUpdateInput = {};
       if (args.rating) updateData.rating = args.rating;
       if (args.comment) updateData.comment = args.comment;
 
@@ -58,8 +64,8 @@ export const reviewResolver = {
       });
 
       return { userError: null, review };
-    } catch (error: any) {
-      return { userError: error.message, review: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), review: null };
     }
   },
 
@@ -94,8 +100,8 @@ export const reviewResolver = {
       });
 
       return { userError: null, review };
-    } catch (error: any) {
-      return { userError: error.message, review: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), review: null };
     }
   },
 };

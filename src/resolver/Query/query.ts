@@ -1,4 +1,5 @@
 import { Context } from '../../types/context';
+import { Prisma } from '@prisma/client';
 
 export const Query = {
   me: async (parent: unknown, args: unknown, { prisma, userId }: Context) => {
@@ -43,7 +44,7 @@ export const Query = {
     args: { destination?: string; startDate?: string; travelType?: string },
     { prisma }: Context,
   ) => {
-    const whereClause: any = {};
+    const whereClause: Prisma.TravelPlanWhereInput = {};
     if (args.destination) {
       whereClause.destination = {
         contains: args.destination,

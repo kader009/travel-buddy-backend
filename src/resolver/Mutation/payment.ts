@@ -1,5 +1,10 @@
 import { Context } from '../../types/context';
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 export const paymentResolver = {
   createPaymentIntent: async (
     parent: unknown,
@@ -62,8 +67,8 @@ export const paymentResolver = {
       });
 
       return { userError: null, subscription };
-    } catch (error: any) {
-      return { userError: error.message, subscription: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), subscription: null };
     }
   },
 };

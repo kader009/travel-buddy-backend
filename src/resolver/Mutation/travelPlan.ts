@@ -1,5 +1,10 @@
 import { Context } from '../../types/context';
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 interface CreateTravelPlanInput {
   destination: string;
   startDate: string;
@@ -37,8 +42,8 @@ export const travelPlanResolver = {
       });
 
       return { userError: null, travelPlan };
-    } catch (error: any) {
-      return { userError: error.message, travelPlan: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), travelPlan: null };
     }
   },
 
@@ -59,12 +64,18 @@ export const travelPlanResolver = {
       if (plan.userId !== userId)
         return { userError: 'Forbidden', travelPlan: null };
 
-      const updateData: any = { ...args };
-      delete updateData.id;
+      const { id: _id, startDate, endDate, ...rest } = args;
+      const updateData: Partial<{
+        destination: string;
+        startDate: Date;
+        endDate: Date;
+        budgetRange: string;
+        travelType: string;
+        description: string;
+      }> = { ...rest };
 
-      if (updateData.startDate)
-        updateData.startDate = new Date(updateData.startDate);
-      if (updateData.endDate) updateData.endDate = new Date(updateData.endDate);
+      if (startDate) updateData.startDate = new Date(startDate);
+      if (endDate) updateData.endDate = new Date(endDate);
 
       const travelPlan = await prisma.travelPlan.update({
         where: { id: args.id },
@@ -72,8 +83,8 @@ export const travelPlanResolver = {
       });
 
       return { userError: null, travelPlan };
-    } catch (error: any) {
-      return { userError: error.message, travelPlan: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), travelPlan: null };
     }
   },
 
@@ -97,8 +108,8 @@ export const travelPlanResolver = {
       });
 
       return { userError: null, travelPlan };
-    } catch (error: any) {
-      return { userError: error.message, travelPlan: null };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), travelPlan: null };
     }
   },
 };
