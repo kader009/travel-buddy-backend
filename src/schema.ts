@@ -71,21 +71,27 @@ export const typeDefs = `#graphql
     user: User
   }
 
-  type Query {
-    me: User
-    users: [User]
-    user(id: ID!): User
-    
+  type RatingInfo {
+    average: Float
+    count: Int
+  }
 
-    travelPlans: [TravelPlan]
-    travelPlan(id: ID!): TravelPlan
-    matchTravelers(destination: String, startDate: String, travelType: String): [TravelPlan]
+  type AdminStats {
+    totalUsers: Int
+    totalTravelPlans: Int
+    totalReviews: Int
+    totalActiveSubscriptions: Int
   }
 
   type AuthPayload {
+    userError: String
     token: String
     user: User
+  }
+
+  type UserPayload {
     userError: String
+    user: User
   }
 
   type TravelPlanPayload {
@@ -116,23 +122,56 @@ export const typeDefs = `#graphql
     currentLocation: String
   }
 
+  type Query {
+    # User queries
+    me: User
+    users(page: Int, limit: Int): [User]
+    user(id: ID!): User
+
+    # Travel plan queries
+    travelPlans(page: Int, limit: Int): [TravelPlan]
+    travelPlan(id: ID!): TravelPlan
+    matchTravelers(
+      destination: String
+      startDate: String
+      endDate: String
+      travelType: String
+    ): [TravelPlan]
+
+    # Review queries
+    reviewsForUser(userId: ID!, page: Int, limit: Int): [Review]
+    averageRating(userId: ID!): RatingInfo
+
+    # Admin queries
+    adminStats: AdminStats
+  }
+
   type Mutation {
-    signup (
+    # Auth
+    signup(
       name: String!
       email: String!
       password: String!
     ): AuthPayload
 
-    login (
+    login(
       email: String!
       password: String!
     ): AuthPayload
 
+    # User
+    updateUser(
+      name: String
+      email: String
+    ): UserPayload
+
+    # Profile
     updateProfile(
       input: ProfileInput!
     ): ProfilePayload
 
-    createTravelPlan (
+    # Travel Plans
+    createTravelPlan(
       destination: String!
       startDate: String!
       endDate: String!
@@ -141,7 +180,7 @@ export const typeDefs = `#graphql
       description: String!
     ): TravelPlanPayload
 
-    updateTravelPlan (
+    updateTravelPlan(
       id: ID!
       destination: String
       startDate: String
@@ -153,6 +192,7 @@ export const typeDefs = `#graphql
 
     deleteTravelPlan(id: ID!): TravelPlanPayload
 
+    # Reviews
     createReview(
       reviewedId: ID!
       rating: Int!
@@ -167,7 +207,13 @@ export const typeDefs = `#graphql
 
     deleteReview(id: ID!): ReviewPayload
 
+    # Payment
     createPaymentIntent(planType: String!): String
     verifyPayment(transactionId: String!, planType: String!): SubscriptionPayload
+
+    # Admin
+    updateUserRole(userId: ID!, role: Role!): UserPayload
+    adminDeleteUser(userId: ID!): UserPayload
+    adminDeleteTravelPlan(id: ID!): TravelPlanPayload
   }
 `;

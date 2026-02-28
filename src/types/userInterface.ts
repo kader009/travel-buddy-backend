@@ -4,12 +4,7 @@ export interface UserCreate {
   password: string;
 }
 
-export interface PostArgs {
-  id?: string;
-  title?: string;
-  content?: string;
-}
-
-export interface PostIdArgs {
-  id: string;
+export interface LoginInput {
+  email: string;
+  password: string;
 }

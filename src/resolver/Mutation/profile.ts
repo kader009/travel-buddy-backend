@@ -1,10 +1,6 @@
 import { Context } from '../../types/context';
 import { ProfileInput } from '../../types/profile';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
+import { getErrorMessage } from '../../utils/errorHelper';
 
 export const profileResolver = {
   updateProfile: async (

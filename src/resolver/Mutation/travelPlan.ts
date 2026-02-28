@@ -3,11 +3,7 @@ import {
   CreateTravelPlanInput,
   UpdateTravelPlanInput,
 } from '../../types/travelPlan';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
+import { getErrorMessage } from '../../utils/errorHelper';
 
 export const travelPlanResolver = {
   createTravelPlan: async (

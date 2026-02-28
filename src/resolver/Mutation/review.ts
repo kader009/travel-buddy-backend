@@ -1,10 +1,6 @@
 import { Context } from '../../types/context';
 import { Prisma } from '@prisma/client';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
+import { getErrorMessage } from '../../utils/errorHelper';
 
 export const reviewResolver = {
   createReview: async (
@@ -19,6 +15,14 @@ export const reviewResolver = {
     try {
       if (userId === args.reviewedId) {
         return { userError: 'You cannot review yourself', review: null };
+      }
+
+      if (args.rating < 1 || args.rating > 5) {
+        return { userError: 'Rating must be between 1 and 5', review: null };
+      }
+
+      if (!args.comment || args.comment.trim().length < 1) {
+        return { userError: 'Comment is required', review: null };
       }
 
       const review = await prisma.review.create({
@@ -55,7 +59,12 @@ export const reviewResolver = {
         return { userError: 'Forbidden', review: null };
 
       const updateData: Prisma.ReviewUpdateInput = {};
-      if (args.rating) updateData.rating = args.rating;
+      if (args.rating !== undefined) {
+        if (args.rating < 1 || args.rating > 5) {
+          return { userError: 'Rating must be between 1 and 5', review: null };
+        }
+        updateData.rating = args.rating;
+      }
       if (args.comment) updateData.comment = args.comment;
 
       const review = await prisma.review.update({
