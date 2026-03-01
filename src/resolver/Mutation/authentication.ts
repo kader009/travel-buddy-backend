@@ -9,7 +9,7 @@ export const authResolver = {
     try {
       if (!args.name || args.name.trim().length < 2) {
         return {
-          userError: 'Name must be at least 2 characters',
+          userError: 'Name must be at least 5 characters',
           token: null,
           user: null,
         };
