@@ -42,8 +42,11 @@ export const authResolver = {
           name: args.name,
           email: args.email,
           password: hashedPassword,
+          role: args.role || 'USER',
           profile: {
-            create: {},
+            create: {
+              profileImage: args.profileImage || null,
+            },
           },
         },
       });

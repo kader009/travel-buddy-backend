@@ -180,6 +180,8 @@ export const typeDefs = `#graphql
       name: String!
       email: String!
       password: String!
+      role: Role
+      profileImage: String
     ): AuthPayload
 
     login(
