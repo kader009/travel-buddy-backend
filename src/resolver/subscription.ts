@@ -4,10 +4,8 @@ export const Subscription = {
   user: async (
     parent: { userId: string },
     args: unknown,
-    { prisma }: Context,
+    { userLoader }: Context,
   ) => {
-    return prisma.subscription
-      .findUnique({ where: { userId: parent.userId } })
-      .user();
+    return userLoader.load(parent.userId);
   },
 };

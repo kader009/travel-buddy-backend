@@ -1,6 +1,6 @@
 import { Context } from '../types/context';
 
-export const TravelPlan = {
+export const TravelRequest = {
   user: async (
     parent: { userId: string },
     args: unknown,
@@ -8,13 +8,13 @@ export const TravelPlan = {
   ) => {
     return userLoader.load(parent.userId);
   },
-  requests: async (
-    parent: { id: string },
+  travelPlan: async (
+    parent: { travelPlanId: string },
     args: unknown,
     { prisma }: Context,
   ) => {
-    return prisma.travelRequest.findMany({
-      where: { travelPlanId: parent.id },
+    return prisma.travelPlan.findUnique({
+      where: { id: parent.travelPlanId },
     });
   },
 };

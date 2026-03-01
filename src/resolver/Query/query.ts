@@ -74,6 +74,7 @@ export const Query = {
       startDate?: string;
       endDate?: string;
       travelType?: string;
+      interests?: string[];
     },
     { prisma }: Context,
   ) => {
@@ -93,9 +94,50 @@ export const Query = {
     if (args.travelType) {
       whereClause.travelType = args.travelType;
     }
+    if (args.interests && args.interests.length > 0) {
+      whereClause.user = {
+        profile: {
+          travelInterests: {
+            hasSome: args.interests,
+          },
+        },
+      };
+    }
     return await prisma.travelPlan.findMany({
       where: whereClause,
+      include: { user: { include: { profile: true } } },
       orderBy: { startDate: 'asc' },
+    });
+  },
+
+  // Get requests for a specific travel plan (only owner)
+  travelRequests: async (
+    parent: unknown,
+    { travelPlanId }: { travelPlanId: string },
+    { prisma, userId }: Context,
+  ) => {
+    if (!userId) return [];
+    const plan = await prisma.travelPlan.findUnique({
+      where: { id: travelPlanId },
+    });
+    if (!plan || plan.userId !== userId) return [];
+
+    return await prisma.travelRequest.findMany({
+      where: { travelPlanId },
+      include: { user: true },
+    });
+  },
+
+  // Get my sent requests
+  myTravelRequests: async (
+    parent: unknown,
+    args: unknown,
+    { prisma, userId }: Context,
+  ) => {
+    if (!userId) return [];
+    return await prisma.travelRequest.findMany({
+      where: { userId },
+      include: { travelPlan: true },
     });
   },
 

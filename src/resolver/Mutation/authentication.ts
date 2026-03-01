@@ -42,6 +42,9 @@ export const authResolver = {
           name: args.name,
           email: args.email,
           password: hashedPassword,
+          profile: {
+            create: {},
+          },
         },
       });
 
@@ -72,6 +75,45 @@ export const authResolver = {
       return { userError: null, token, user };
     } catch (error: unknown) {
       return { userError: getErrorMessage(error), token: null, user: null };
+    }
+  },
+
+  changePassword: async (
+    parent: unknown,
+    args: { oldPassword: string; newPassword: string },
+    { prisma, userId }: Context,
+  ) => {
+    if (!userId) {
+      return { userError: 'Unauthorized', user: null };
+    }
+
+    try {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return { userError: 'User not found', user: null };
+      }
+
+      const valid = await bcrypt.compare(args.oldPassword, user.password);
+      if (!valid) {
+        return { userError: 'Current password is incorrect', user: null };
+      }
+
+      if (args.newPassword.length < 6) {
+        return {
+          userError: 'New password must be at least 6 characters',
+          user: null,
+        };
+      }
+
+      const hashedPassword = await bcrypt.hash(args.newPassword, 10);
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword },
+      });
+
+      return { userError: null, user: updatedUser };
+    } catch (error: unknown) {
+      return { userError: getErrorMessage(error), user: null };
     }
   },
 };

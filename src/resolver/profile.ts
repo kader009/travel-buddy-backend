@@ -4,10 +4,8 @@ export const Profile = {
   user: async (
     parent: { userId: string },
     args: unknown,
-    { prisma }: Context,
+    { userLoader }: Context,
   ) => {
-    return prisma.profile
-      .findUnique({ where: { userId: parent.userId } })
-      .user();
+    return userLoader.load(parent.userId);
   },
 };

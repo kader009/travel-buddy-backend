@@ -8,7 +8,6 @@ export const typeDefs = `#graphql
     id: ID!
     name: String
     email: String
-    password: String
     role: Role
     isVerified: Boolean
     createdAt: String
@@ -46,6 +45,30 @@ export const typeDefs = `#graphql
     createdAt: String
     updatedAt: String
     user: User
+    requests: [TravelRequest]
+  }
+
+  enum RequestStatus {
+    PENDING
+    APPROVED
+    REJECTED
+  }
+
+  type TravelRequest {
+    id: ID!
+    userId: String
+    travelPlanId: String
+    message: String
+    status: RequestStatus
+    createdAt: String
+    updatedAt: String
+    user: User
+    travelPlan: TravelPlan
+  }
+
+  type TravelRequestPayload {
+    userError: String
+    travelRequest: TravelRequest
   }
 
   type Review {
@@ -136,7 +159,12 @@ export const typeDefs = `#graphql
       startDate: String
       endDate: String
       travelType: String
+      interests: [String]
     ): [TravelPlan]
+
+    # Travel request queries
+    travelRequests(travelPlanId: ID!): [TravelRequest]
+    myTravelRequests: [TravelRequest]
 
     # Review queries
     reviewsForUser(userId: ID!, page: Int, limit: Int): [Review]
@@ -158,6 +186,11 @@ export const typeDefs = `#graphql
       email: String!
       password: String!
     ): AuthPayload
+
+    changePassword(
+      oldPassword: String!
+      newPassword: String!
+    ): UserPayload
 
     # User
     updateUser(
@@ -191,6 +224,17 @@ export const typeDefs = `#graphql
     ): TravelPlanPayload
 
     deleteTravelPlan(id: ID!): TravelPlanPayload
+
+    # Travel Requests
+    sendTravelRequest(
+      travelPlanId: ID!
+      message: String
+    ): TravelRequestPayload
+
+    updateTravelRequestStatus(
+      requestId: ID!
+      status: RequestStatus!
+    ): TravelRequestPayload
 
     # Reviews
     createReview(

@@ -2,17 +2,17 @@ import { Context } from '../types/context';
 
 export const Review = {
   reviewer: async (
-    parent: { id: string },
+    parent: { reviewerId: string },
     args: unknown,
-    { prisma }: Context,
+    { userLoader }: Context,
   ) => {
-    return prisma.review.findUnique({ where: { id: parent.id } }).reviewer();
+    return userLoader.load(parent.reviewerId);
   },
   reviewed: async (
-    parent: { id: string },
+    parent: { reviewedId: string },
     args: unknown,
-    { prisma }: Context,
+    { userLoader }: Context,
   ) => {
-    return prisma.review.findUnique({ where: { id: parent.id } }).reviewed();
+    return userLoader.load(parent.reviewedId);
   },
 };

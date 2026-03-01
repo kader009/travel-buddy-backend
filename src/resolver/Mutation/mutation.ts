@@ -5,6 +5,7 @@ import { reviewResolver } from './review';
 import { paymentResolver } from './payment';
 import { adminResolver } from './admin';
 import { userMutationResolver } from './userMutation';
+import { travelRequestResolver } from './travelRequest';
 
 export const Mutation = {
   ...authResolver,
@@ -14,4 +15,5 @@ export const Mutation = {
   ...paymentResolver,
   ...adminResolver,
   ...userMutationResolver,
+  ...travelRequestResolver,
 };

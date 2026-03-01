@@ -28,6 +28,7 @@ model User {
   reviewsSent      Review[]      @relation("ReviewReviewer")
   reviewsReceived  Review[]      @relation("ReviewReviewed")
   subscription     Subscription?
+  travelRequests   TravelRequest[]
 }
 
 model Profile {
@@ -56,6 +57,28 @@ model TravelPlan {
   budgetRange String
   travelType  String
   description String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  requests  TravelRequest[]
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model TravelRequest {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  travelPlanId String     @db.ObjectId
+  travelPlan   TravelPlan @relation(fields: [travelPlanId], references: [id])
+
+  message String?
+  status  RequestStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

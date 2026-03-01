@@ -5,6 +5,7 @@ import { Profile } from './profile';
 import { TravelPlan } from './travelPlan';
 import { Review } from './review';
 import { Subscription } from './subscription';
+import { TravelRequest } from './travelRequestType';
 
 export const resolvers = {
   Query,
@@ -14,4 +15,5 @@ export const resolvers = {
   TravelPlan,
   Review,
   Subscription,
+  TravelRequest,
 };

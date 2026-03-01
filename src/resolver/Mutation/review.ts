@@ -25,6 +25,20 @@ export const reviewResolver = {
         return { userError: 'Comment is required', review: null };
       }
 
+      const existingReview = await prisma.review.findFirst({
+        where: {
+          reviewerId: userId,
+          reviewedId: args.reviewedId,
+        },
+      });
+
+      if (existingReview) {
+        return {
+          userError: 'You have already reviewed this user',
+          review: null,
+        };
+      }
+
       const review = await prisma.review.create({
         data: {
           reviewerId: userId,
