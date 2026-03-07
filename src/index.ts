@@ -15,8 +15,9 @@ const server = new ApolloServer({
 });
 
 async function startServer() {
+  const port = Number(process.env.PORT) || 4000;
   const { url } = await startStandaloneServer(server, {
-    listen: { port: 4000 },
+    listen: { port },
     context: async ({ req }): Promise<Context> => {
       const userLoader = createUserLoader(prisma);
 
