@@ -12,6 +12,7 @@ const prisma = new PrismaClient();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  csrfPrevention: false,
 });
 
 async function startServer() {
